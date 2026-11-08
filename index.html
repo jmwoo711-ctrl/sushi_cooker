@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>스시 마스터 - 초밥 타이쿤 게임 (Sushi Master)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div id="game-container">
+    <!-- 헤더 HUD 영역 -->
+    <header class="header-bar">
+      <div class="title-logo">
+        <span>🍣</span>
+        <span>스시 마스터</span>
+      </div>
+      <div class="stats-panel">
+        <div class="stat-item score">
+          <span>💰</span>
+          <span id="stat-score">₩ 0</span>
+        </div>
+        <div class="stat-item combo">
+          <span>⚡</span>
+          <span id="stat-combo">0 COMBO</span>
+        </div>
+        <div class="stat-item timer">
+          <span>⏳</span>
+          <span id="stat-timer">80s</span>
+        </div>
+      </div>
+      <div class="header-btns">
+        <button id="btn-mute" class="icon-btn">🔊 사운드</button>
+      </div>
+    </header>
+
+    <!-- 손님 식사 카운터 영역 (좌석 3개) -->
+    <main class="dining-area">
+      <div class="seat-slot" id="seat-0"></div>
+      <div class="seat-slot" id="seat-1"></div>
+      <div class="seat-slot" id="seat-2"></div>
+    </main>
+
+    <!-- 주방 조리대 영역 -->
+    <section class="kitchen-area">
+      <!-- 중앙 도마 & 액션 버튼 -->
+      <div class="crafting-zone">
+        <div class="cutting-board" id="cutting-board">
+          <span class="board-label">조리 도마 (CUTTING BOARD)</span>
+          <div id="board-empty-hint" class="sushi-empty-hint">재료를 선택하여 초밥을 쥐어보세요!</div>
+          <div id="current-dish" class="current-sushi-dish"></div>
+        </div>
+
+        <div class="action-buttons">
+          <button id="btn-serve" class="action-btn serve-btn">
+            <span>🍣</span>
+            <span>초밥 서빙 [Space]</span>
+          </button>
+          <button id="btn-trash" class="action-btn trash-btn">
+            <span>🗑️</span>
+            <span>도마 비우기 [X]</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 하단 재료 트레이 -->
+      <div class="ingredients-shelf">
+        <div class="shelf-title">
+          <span>🍱 신선한 초밥 재료</span>
+          <span style="font-weight: normal; color: #795548;">단축키 [1][2] [Q][W][E][R][T][Y] 지원</span>
+        </div>
+        <div class="ingredient-groups">
+          <!-- 밥 & 와사비 베이스 -->
+          <div class="ing-col">
+            <button class="ing-btn" data-ing="rice" title="초밥 밥 (단축키: 1)">
+              <span class="key-hint">1</span>
+              <span class="ing-icon">🍚</span>
+              <span>샤리 (밥)</span>
+            </button>
+            <button class="ing-btn" data-ing="wasabi" title="생와사비 (단축키: 2)">
+              <span class="key-hint">2</span>
+              <span class="ing-icon">🌿</span>
+              <span>생와사비</span>
+            </button>
+          </div>
+
+          <!-- 네타 (생선 및 토핑들) -->
+          <div class="ing-col">
+            <button class="ing-btn" data-ing="salmon" title="연어 (단축키: Q)">
+              <span class="key-hint">Q</span>
+              <span class="ing-icon">🐟</span>
+              <span>생연어</span>
+            </button>
+            <button class="ing-btn" data-ing="tuna" title="참치 (단축키: W)">
+              <span class="key-hint">W</span>
+              <span class="ing-icon">🍣</span>
+              <span>참치(마구로)</span>
+            </button>
+          </div>
+
+          <div class="ing-col">
+            <button class="ing-btn" data-ing="shrimp" title="초새우 (단축키: E)">
+              <span class="key-hint">E</span>
+              <span class="ing-icon">🦐</span>
+              <span>초새우</span>
+            </button>
+            <button class="ing-btn" data-ing="tamago" title="계란말이 (단축키: R)">
+              <span class="key-hint">R</span>
+              <span class="ing-icon">🍳</span>
+              <span>달콤 계란</span>
+            </button>
+          </div>
+
+          <div class="ing-col">
+            <button class="ing-btn" data-ing="unagi" title="양념 장어 (단축키: T)">
+              <span class="key-hint">T</span>
+              <span class="ing-icon">🍱</span>
+              <span>장어구이</span>
+            </button>
+            <button class="ing-btn" data-ing="ikura" title="날치알 군함 (단축키: Y)">
+              <span class="key-hint">Y</span>
+              <span class="ing-icon">🟠</span>
+              <span>날치알군함</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 게임 시작 오버레이 -->
+    <div id="start-overlay" class="overlay-screen">
+      <div class="overlay-card">
+        <h1>🍣 스시 마스터</h1>
+        <p>
+          신선한 재료로 최고의 초밥을 만들어 손님들에게 대접하세요!<br>
+          주문서의 <strong>와사비 유무</strong>를 꼭 확인하고<br>
+          신속하게 서빙하여 콤보와 보너스 팁을 챙겨보세요!
+        </p>
+        <div style="background: #fff; padding: 10px; border-radius: 8px; margin-bottom: 20px; font-size: 0.88rem; text-align: left; line-height: 1.6;">
+          • <strong>조리 순서</strong>: 샤리(밥) ➜ (와사비) ➜ 토핑 얹기<br>
+          • <strong>단축키</strong>: 1(밥), 2(와사비), Q/W/E/R/T/Y(토핑), Space(서빙)
+        </div>
+        <button id="btn-start" class="play-start-btn">영업 시작하기! 🔔</button>
+      </div>
+    </div>
+
+    <!-- 게임 종료 정산 오버레이 -->
+    <div id="end-overlay" class="overlay-screen" style="display: none;">
+      <div class="overlay-card">
+        <h1>영업 마감! 🏁</h1>
+        <p>오늘의 매출 정산 결과입니다.</p>
+        <div class="rank-badge" id="final-rank">S</div>
+        <div id="rank-comment" style="font-weight: 700; color: #d35400; margin-bottom: 14px;"></div>
+        
+        <div class="final-stats">
+          <div>
+            <div style="font-size: 0.8rem; color: #7f8c8d;">총 매출액</div>
+            <div id="final-score" style="font-size: 1.15rem; color: #27ae60;">₩ 0</div>
+          </div>
+          <div>
+            <div style="font-size: 0.8rem; color: #7f8c8d;">서빙 접시</div>
+            <div id="final-served" style="font-size: 1.15rem; color: #2980b9;">0 접시</div>
+          </div>
+          <div>
+            <div style="font-size: 0.8rem; color: #7f8c8d;">최대 콤보</div>
+            <div id="final-combo" style="font-size: 1.15rem; color: #e74c3c;">0 콤보</div>
+          </div>
+        </div>
+
+        <button id="btn-restart" class="play-start-btn">다시 도전하기 🔄</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
